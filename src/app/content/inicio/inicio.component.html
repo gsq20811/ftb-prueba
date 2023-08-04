@@ -1,0 +1,95 @@
+<nz-space nzDirection="vertical" [nzSize]="24" class="w-100">
+  <div nz-row nzGutter="24" *nzSpaceItem>
+    <!-- CARGA DE ARCHIVO -->
+    <div nz-col>
+      <input
+        type="file"
+        (change)="importarCSV($event)"
+        accept=".csv"
+        #subirCSV
+      />
+    </div>
+
+    <!-- RESETEAR TABLA Y SECCION DE CARGA DE ARCHIVO-->
+    <div nz-col>
+      <button nz-button nzDanger (click)="limpiarTabla()" *ngIf="datos.length">
+        Eliminar datos
+      </button>
+    </div>
+  </div>
+
+  <!-- PANTALLA DE ESPERA -->
+  <ng-container *ngIf="!datos.length">
+    <nz-space
+      nzDirection="vertical"
+      [nzSize]="12"
+      class="w-100 text-center"
+      *nzSpaceItem
+    >
+      <img src="assets/cargarImagen.svg" [width]="250" alt="" *nzSpaceItem />
+      <h4 nz-typography *nzSpaceItem>
+        Todavia no hay items disponibles, por favor cargue un archivo CSV
+      </h4>
+    </nz-space>
+  </ng-container>
+
+  <!-- MOSTRAR TABLA CON LOS ITEMS DEL ARCHIVO CSV -->
+  <ng-container *ngIf="datos.length">
+    <nz-table
+      [nzData]="datos"
+      [nzFrontPagination]="false"
+      [nzShowPagination]="false"
+      *nzSpaceItem
+    >
+      <!-- CABECERAS DE LA TABLA -->
+      <thead>
+        <tr>
+          <th
+            [nzWidth]="columna.nzWidth"
+            [nzAlign]="columna.nzAlign"
+            *ngFor="let columna of cabecera"
+          >
+            <span>{{ columna.nombre }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <!-- CUERPO DE LA TABLA -->
+      <tbody>
+        <tr *ngFor="let dato of datos">
+          <td nzAlign="center">
+            {{ dato.fecha }}
+          </td>
+          <td nzAlign="left">
+            {{ dato.descripcion }}
+          </td>
+          <td nzAlign="center">
+            {{ dato.moneda }}
+          </td>
+          <td nzAlign="right">
+            {{ dato.monto | number : ".2-2" }}
+          </td>
+          <td nzAlign="center">
+            {{ dato.codigo_unico }}
+          </td>
+          <td nzAlign="center">
+            <nz-space [nzSize]="8">
+              <button nz-button nzType="primary" nzShape="circle" *nzSpaceItem>
+                <span nz-icon nzType="edit"></span>
+              </button>
+              <button
+                nz-button
+                nzDanger
+                nzShape="circle"
+                (click)="eliminarFila(dato.codigo_unico)"
+                *nzSpaceItem
+              >
+                <span nz-icon nzType="delete"></span>
+              </button>
+            </nz-space>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-container>
+</nz-space>
